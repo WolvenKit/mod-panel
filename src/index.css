@@ -1,0 +1,19 @@
+@import "tailwindcss";
+@import "@fontsource/rajdhani/400";
+@import "@fontsource/rajdhani/700";
+
+@theme {
+  --color-yellow: #f3e600;
+  --color-yellow-dark: #d3c600;
+  --color-cyan-light: #75ffff;
+  --color-cyan: #04daf6;
+  --color-cyan-dark: #008b9d;
+  --color-cyan-darker: #00464f;
+  --color-red: #ff003c;
+  --color-red-dark: #910022;
+  --color-red-darker: #40000f;
+  --color-red-darkest: #090002;
+  --color-blurple: #5865f2;
+
+  --font-rajdhani: Rajdhani, sans-serif;
+}
