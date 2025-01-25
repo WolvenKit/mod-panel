@@ -4,7 +4,7 @@ import { InfoView } from "./views/InfoView";
 import { Dots } from "./components/Dots";
 
 export function App() {
-  const [token, setToken] = createSignal<string>("e");
+  const [token, _setToken] = createSignal<string>("e");
 
   return (
     <>
