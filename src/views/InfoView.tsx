@@ -4,6 +4,8 @@ import { DataRow } from "../components/DataRow";
 import { discordData } from "../lib/discord";
 
 export function InfoView() {
+  console.log(data);
+
   const [info] = createResource(() => data);
   const [user] = createResource(() => discordData);
 
@@ -15,7 +17,7 @@ export function InfoView() {
 
       <div class="flex w-full flex-wrap items-start gap-x-8 gap-y-4">
         <dl class="mr-auto grid grid-cols-[auto_auto] gap-x-4 gap-y-2 text-xl">
-          <DataRow key="Status:" value={info()?.Status} />
+          <DataRow key="Status:" value={info()?.Status ?? "Clear"} />
           <DataRow key="Warning Level:" value={info()?.WarningLevel || 0} />
           <DataRow key="Warning Count:" value={info()?.WarningCount || 0} />
         </dl>
@@ -23,10 +25,17 @@ export function InfoView() {
         <dl class="mr-auto grid grid-cols-[auto_auto] gap-x-4 gap-y-2 text-xl">
           <DataRow
             key="Last Warning:"
-            value={<time datetime={info()?.LastWarning}>{new Date(info()?.LastWarning || 0).toLocaleString()}</time>}
+            value={<time datetime={info()?.LastWarning}>{ info()?.LastWarning ? new Date(info()?.LastWarning || 0).toLocaleString() : ""}</time>}
           />
           <DataRow key="Last Reason:" value={info()?.LastReason} />
-          <DataRow key="Resolve:" value={info()?.Resolve} />
+          <DataRow
+            key="Resolved:"
+            value={
+              String(info()?.Resolved ?? true)
+                .charAt(0)
+                .toUpperCase() + String(info()?.Resolved ?? true).slice(1)
+            }
+          />
         </dl>
       </div>
 
@@ -42,7 +51,10 @@ export function InfoView() {
 
                 <dl class="inline-grid grid-cols-[auto_auto] gap-x-4">
                   <DataRow key="Reason:" value={warning.Reason} />
-                  <DataRow key="Issuer:" value={warning.Issuer} />
+                  <DataRow
+                    key="Issuer:"
+                    value={warning.IssuerName.charAt(0).toUpperCase() + warning.IssuerName.slice(1)}
+                  />
                 </dl>
               </li>
             )}
