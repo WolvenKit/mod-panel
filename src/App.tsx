@@ -1,10 +1,15 @@
-import { createSignal, Show, Suspense } from "solid-js";
+import { createEffect, createResource, ErrorBoundary, Show, Suspense } from "solid-js";
 import { LoginView } from "./views/LoginView";
 import { InfoView } from "./views/InfoView";
 import { Dots } from "./components/Dots";
+import { fetchMemberInfo } from "./lib/lizzy";
+import { fetchCurrentUser } from "./lib/discord";
+import { AppError } from "./components/Error";
 
 export function App() {
-  const [token, _setToken] = createSignal<string>("e");
+  const [user, { refetch }] = createResource(fetchCurrentUser);
+  const [info] = createResource(() => user.state === "ready" && user()?.id, fetchMemberInfo);
+  const error = () => user.error || info.error;
 
   return (
     <>
@@ -14,11 +19,15 @@ export function App() {
       </h1>
       <Dots class="w-full" />
 
-      <Suspense fallback={<>Loading...</>}>
-        <Show when={token()} fallback={<LoginView />}>
-          <InfoView />
-        </Show>
-      </Suspense>
+      <Show when={!error()} fallback={<AppError error={error()} retry={refetch} />}>
+        <ErrorBoundary fallback={(error, reset) => <AppError error={error} retry={reset} />}>
+          <Suspense fallback={<>Loading...</>}>
+            <Show when={info()} fallback={<LoginView />}>
+              <InfoView user={user()!} info={info()!} />
+            </Show>
+          </Suspense>
+        </ErrorBoundary>
+      </Show>
     </>
   );
 }

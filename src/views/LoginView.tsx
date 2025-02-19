@@ -1,4 +1,5 @@
 import discordIcon from "../assets/discord-mark-white.svg";
+import { LOGIN_URL } from "../lib/lizzy";
 
 export function LoginView() {
   return (
@@ -10,7 +11,7 @@ export function LoginView() {
       </p>
 
       <a
-        href="/"
+        href={LOGIN_URL}
         class="bg-blurple font-default hover:bg-blurple/75 m-auto inline-block rounded-xl p-4 text-lg transition"
       >
         <img src={discordIcon} class="mr-2 inline size-7" alt="" /> Login with Discord

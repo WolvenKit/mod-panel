@@ -7,52 +7,26 @@ export interface Warning {
 
 export interface LizzyMemberInfo {
   DiscordId: string;
-  Status: "Warn" | "Kick" | "Ban";
-  WarningLevel: number;
-  WarningCount: number;
-  LastWarning: string; // ISO 8601 date string
-  LastReason: string;
+  Status: "Warn" | "Kick" | "Ban" | null;
+  WarningLevel: number | null;
+  WarningCount: number | null;
+  LastWarning: string | null; // ISO 8601 date string
+  LastReason: string | null;
   Resolved: boolean;
-  Warnings: Warning[];
+  Warnings?: Warning[];
 }
 
-export const data: LizzyMemberInfo = await fetch("http://localhost:3000/api/web/user/moderation/697882016892321843")
-  .then((response) => response)
-  .then((res) => res.json())
-  .catch((error) => console.error(error));
+export const LOGIN_URL = `${import.meta.env.VITE_API_URL}/auth/login`;
 
-// export const data: LizzyMemberInfo = {
-//   DiscordId: "879182739817238123",
-//   Status: "Warned",
-//   WarningLevel: 3,
-//   WarningCount: 14,
-//   LastWarning: "2021-10-10T12:00:00Z",
-//   LastReason: "Because they've been a dick.",
-//   Resolve: null,
-//   Warnings: [
-//     {
-//       ID: 1,
-//       IssuedTime: "2021-10-10T12:00:00Z",
-//       Reason: "Because",
-//       Issuer: "Manfred",
-//     },
-//     {
-//       ID: 2,
-//       IssuedTime: "2021-10-10T12:00:00Z",
-//       Reason: "Because",
-//       Issuer: "Gustaf",
-//     },
-//     {
-//       ID: 3,
-//       IssuedTime: "2021-10-10T12:00:00Z",
-//       Reason: "Because",
-//       Issuer: "Zhin",
-//     },
-//     {
-//       ID: 4,
-//       IssuedTime: "2021-10-10T12:00:00Z",
-//       Reason: "Because",
-//       Issuer: "Everyone",
-//     },
-//   ],
-// };
+export async function fetchMemberInfo(userId: string): Promise<LizzyMemberInfo> {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/web/user/moderation/${userId}`, {
+    mode: "cors",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Unexpected response code ${response.status}`);
+  }
+
+  return await response.json();
+}

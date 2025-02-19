@@ -1,48 +1,53 @@
-import { createResource, For, Show } from "solid-js";
-import { data } from "../lib/lizzy";
+import { For, Show } from "solid-js";
 import { DataRow } from "../components/DataRow";
-import { discordData } from "../lib/discord";
+import { DiscordUser } from "../lib/discord";
+import { LizzyMemberInfo } from "../lib/lizzy";
+import { ParentProps } from "solid-js/types/server/rendering.js";
 
-export function InfoView() {
-  console.log(data);
+export interface InfoViewProps {
+  user: DiscordUser;
+  info: LizzyMemberInfo;
+}
 
-  const [info] = createResource(() => data);
-  const [user] = createResource(() => discordData);
-
+export function InfoView(props: InfoViewProps) {
   return (
     <>
       <h2 class="w-full text-2xl">
-        Logged in as <span class="font-bold">{user()?.global_name || user()?.username}</span>.
+        Logged in as <span class="font-bold">{props.user.global_name || props.user.username}</span>.
       </h2>
 
       <div class="flex w-full flex-wrap items-start gap-x-8 gap-y-4">
         <dl class="mr-auto grid grid-cols-[auto_auto] gap-x-4 gap-y-2 text-xl">
-          <DataRow key="Status:" value={info()?.Status ?? "Clear"} />
-          <DataRow key="Warning Level:" value={info()?.WarningLevel || 0} />
-          <DataRow key="Warning Count:" value={info()?.WarningCount || 0} />
+          <DataRow key="Status:" value={props.info.Status ?? "Clear"} />
+          <DataRow key="Warning Level:" value={props.info.WarningLevel || 0} />
+          <DataRow key="Warning Count:" value={props.info.WarningCount || 0} />
         </dl>
 
         <dl class="mr-auto grid grid-cols-[auto_auto] gap-x-4 gap-y-2 text-xl">
           <DataRow
             key="Last Warning:"
-            value={<time datetime={info()?.LastWarning}>{ info()?.LastWarning ? new Date(info()?.LastWarning || 0).toLocaleString() : ""}</time>}
+            value={
+              <Show when={props.info.LastWarning} fallback={<EmptyValue>Never</EmptyValue>}>
+                {(lastWarning) => <time datetime={lastWarning()}>{new Date(lastWarning() || 0).toLocaleString()}</time>}
+              </Show>
+            }
           />
-          <DataRow key="Last Reason:" value={info()?.LastReason} />
+          <DataRow key="Last Reason:" value={props.info.LastReason} />
           <DataRow
             key="Resolved:"
             value={
-              String(info()?.Resolved ?? true)
+              String(props.info.Resolved ?? true)
                 .charAt(0)
-                .toUpperCase() + String(info()?.Resolved ?? true).slice(1)
+                .toUpperCase() + String(props.info.Resolved ?? true).slice(1)
             }
           />
         </dl>
       </div>
 
-      <Show when={info()?.Warnings.length}>
+      <Show when={props.info.Warnings?.length}>
         <h3 class="mt-8 w-full text-3xl font-bold">Warnings</h3>
         <ol class="ml-6 list-decimal space-y-4 marker:text-sm marker:text-zinc-400 marker:tabular-nums">
-          <For each={info()?.Warnings}>
+          <For each={props.info.Warnings}>
             {(warning) => (
               <li class="pl-2 leading-tight">
                 <time class="block tabular-nums" datetime={warning.IssuedTime}>
@@ -63,4 +68,8 @@ export function InfoView() {
       </Show>
     </>
   );
+}
+
+function EmptyValue(props: ParentProps) {
+  return <span class="text-zinc-400 italic">{props.children}</span>;
 }

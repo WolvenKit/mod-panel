@@ -4,7 +4,15 @@ export interface DiscordUser {
   global_name?: string;
 }
 
-export const discordData: DiscordUser = {
-  id: "a",
-  username: "zhincore",
-};
+export async function fetchCurrentUser(): Promise<DiscordUser | undefined> {
+  const response = await fetch(`https://discord.com/api/v10/users/@me`, {
+    mode: "cors",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    return;
+  }
+
+  return await response.json();
+}
