@@ -19,7 +19,7 @@ export interface LizzyMemberInfo {
 export const LOGIN_URL = `${import.meta.env.VITE_API_URL}/auth/login`;
 
 export async function fetchMemberInfo(userId: string): Promise<LizzyMemberInfo> {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/web/user/moderation/${userId}`, {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/web/user/moderation/${userId}`, {
     mode: "cors",
     credentials: "include",
   });
