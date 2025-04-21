@@ -1,4 +1,4 @@
-import { createEffect, createResource, ErrorBoundary, Show, Suspense } from "solid-js";
+import { createResource, ErrorBoundary, Show, Suspense } from "solid-js";
 import { LoginView } from "./views/LoginView";
 import { InfoView } from "./views/InfoView";
 import { Dots } from "./components/Dots";
