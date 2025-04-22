@@ -16,10 +16,22 @@ export interface LizzyMemberInfo {
   Warnings?: Warning[];
 }
 
-export const LOGIN_URL = `${import.meta.env.VITE_API_URL}/auth/login`;
+const URL = new URLSearchParams({
+  client_id: "796283112199553044",
+  response_type: "code",
+  redirect_uri: `${import.meta.env.VITE_API_URL}/auth/redirect`,
+  scope: "identify guilds email",
+});
+
+export const LOGIN_URL = `https://discord.com/oauth2/authorize?${URL.toString()}`;
 
 export async function fetchMemberInfo(userId: string): Promise<LizzyMemberInfo> {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/web/user/moderation/${userId}`, {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/web/moderation/${userId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
     mode: "cors",
     credentials: "include",
   });
